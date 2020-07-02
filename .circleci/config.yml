@@ -4,9 +4,6 @@ executors:
   gradle_docker:
     docker:
       - image: cimg/openjdk:11.0
-    environment:
-      JAVA_OPTS: -Xmx2g
-      TERM: dumb
 
 commands:
   gradle:
@@ -21,7 +18,7 @@ commands:
     steps:
       - run:
           name: << parameters.args >>
-          command: ./gradlew << parameters.args >> --info --max-workers=2
+          command: ./gradlew << parameters.args >> --info --max-workers=2 -Dorg.gradle.jvmargs=-Xmx2g -Dorg.gradle.console=plain
           when: << parameters.when >>
   setup_build_environment:
     description: 'Checkout, restore the cache, and setup docker'

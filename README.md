@@ -8,4 +8,6 @@ Contains:
 - Git and curl binaries
 - [helm-gcs](https://github.com/hayorov/helm-gcs) plugin
 
+https://hub.docker.com/repository/docker/hypertrace/helm-gcs-packager
+
 POC: [@ravisingal](https://github.com/ravisingal)
