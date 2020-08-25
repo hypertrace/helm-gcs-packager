@@ -1,6 +1,6 @@
 plugins {
-  id("org.hypertrace.docker-plugin") version "0.2.3"
-  id("org.hypertrace.docker-publish-plugin") version "0.2.3"
+  id("org.hypertrace.docker-plugin") version "0.6.0"
+  id("org.hypertrace.docker-publish-plugin") version "0.6.0"
 }
 
 hypertraceDocker {

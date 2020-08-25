@@ -1,14 +1,15 @@
 FROM alpine:3.12
 
-RUN apk --no-cache add curl git
+# Use latest recommended version here
+ARG HELM_VERSION=3.3.0
 
-# Install Helm
-RUN curl -Lo helm-v3.1.2-linux-amd64.tar.gz https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz && \
-    tar -zxvf helm-v3.1.2-linux-amd64.tar.gz && \
-    mv linux-amd64/helm /usr/local/bin/helm && \
-    rm helm-v3.1.2-linux-amd64.tar.gz && \
-    rm -rf linux-amd64 && \
-    helm version
+WORKDIR /usr/local/bin
 
-# Install helm-gcs plugin
-RUN helm plugin install https://github.com/hayorov/helm-gcs.git --version 0.3.5
+# Install Helm, helm-gcs plugin and git
+RUN apk --update --no-cache add curl git && \
+  curl -sSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xz \
+    --strip=1 linux-amd64/helm && \
+  helm plugin install https://github.com/hayorov/helm-gcs.git --version 0.3.6 && \
+  apk del curl --purge && \
+  rm -rf ~/.cache ~/.local/share/helm/plugins/helm-gcs.git/.git && \
+  helm version && helm plugin list
