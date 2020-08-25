@@ -49,25 +49,36 @@ jobs:
       - gradle:
           args: dockerBuildImages
       - save_populated_cache
-  publish:
+  merge-publish:
     executor: gradle_docker
     steps:
       - setup_build_environment
       - gradle:
-          args: :tag -Prelease
-      - gradle:
+          args: dockerPushImages
+  release-publish:
+    executor: gradle_docker
+    steps:
+      - setup_build_environment
+      - gradle: # Create version tag based off trigger
+          args: :tag
+      - run:
+          name: Remove trigger tag
+          command: git tag -d release-$(git describe --abbrev=0)
+      - gradle: # Publish artifacts
           args: dockerPushImages
       - add_ssh_keys:
           fingerprints:
             - 'af:eb:74:05:48:c6:ff:d0:c4:9b:ef:06:6b:b4:fc:55'
-      - run: git push origin $(./gradlew -q :printVersion)
+      - run:
+          name: Update remote tags
+          command: git push origin :refs/tags/release-$(git describe --abbrev=0) refs/tags/$(git describe --abbrev=0)
 
 workflows:
   version: 2
   build-and-publish:
     jobs:
       - build
-      - publish:
+      - merge-publish:
           context: hypertrace-publishing
           requires:
             - build
@@ -75,3 +86,10 @@ workflows:
             branches:
               only:
                 - main
+      - release-publish:
+          context: hypertrace-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^release-.*/
