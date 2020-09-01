@@ -6,6 +6,7 @@ Used to build, package and publish helm charts. It's based on an alpine image.
 Contains:
 * Helm binary
 * Git binaries
+* OpenSSH client binaries
 * [helm-gcs](https://github.com/hayorov/helm-gcs) plugin
 
 https://hub.docker.com/repository/docker/hypertrace/helm-gcs-packager
